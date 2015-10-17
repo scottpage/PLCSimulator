@@ -1,0 +1,179 @@
+﻿<UserControl x:Class="ElementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:ScottPage.Simulators.Simulator"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             Margin="-1,0,-1,0"
+             Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}">
+    <UserControl.Style>
+        <Style TargetType="{x:Type UserControl}">
+            <Setter Property="Background"
+                    Value="Transparent" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsScanning}"
+                             Value="True">
+                    <Setter Property="Background"
+                            Value="Yellow" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Style>
+    <UserControl.ContextMenu>
+        <ContextMenu>
+            <ContextMenu.Style>
+                <Style TargetType="{x:Type ContextMenu}">
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsTemplate}"
+                                     Value="False">
+                            <Setter Property="Visibility"
+                                    Value="Visible" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ContextMenu.Style>
+            <MenuItem>
+                <MenuItem.Style>
+                    <Style TargetType="{x:Type MenuItem}">
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ActionType}"
+                                         Value="{x:Static local:ElementActionType.Toggle}">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Setter Property="Header"
+                                        Value="Toggle" />
+                                <Setter Property="Command"
+                                        Value="{Binding Tag.ToggleCommand}" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding ActionType}"
+                                         Value="{x:Static local:ElementActionType.Numeric}">
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                                <Setter Property="Header"
+                                        Value="Change Value" />
+                                <Setter Property="Command"
+                                        Value="{Binding Tag.ChangeValueCommand}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </MenuItem.Style>
+            </MenuItem>
+            <MenuItem Command="{Binding RemoveCommand}"
+                      Header="Remove" />
+        </ContextMenu>
+    </UserControl.ContextMenu>
+    <Border BorderThickness="1"
+            Grid.RowSpan="2">
+        <Border.Style>
+            <Style TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush"
+                        Value="Transparent" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver"
+                             Value="True">
+                        <Setter Property="BorderBrush"
+                                Value="Gray" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+        </Border.Style>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.25*" />
+                <RowDefinition Height="0.75*" />
+            </Grid.RowDefinitions>
+            <Line Stretch="Fill"
+                  Grid.RowSpan="2"
+                  VerticalAlignment="Stretch"
+                  HorizontalAlignment="Right"
+                  X1="1"
+                  X2="1"
+                  Y1="0"
+                  Y2="1"
+                  Margin="0,-4,0,-4"
+                  StrokeThickness="4">
+                <Line.Style>
+                    <Style TargetType="{x:Type Line}">
+                        <Setter Property="Stroke"
+                                Value="{StaticResource UnSetElementBrush}" />
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding IsTemplate}"
+                                               Value="false" />
+                                    <Condition Binding="{Binding IsRungRightEnd}"
+                                               Value="True" />
+                                </MultiDataTrigger.Conditions>
+                                <MultiDataTrigger.Setters>
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                </MultiDataTrigger.Setters>
+                            </MultiDataTrigger>
+                            <DataTrigger Binding="{Binding IsSet}"
+                                         Value="True">
+                                <Setter Property="Stroke"
+                                        Value="{StaticResource IsSetElementBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Line.Style>
+            </Line>
+            <Rectangle Fill="Transparent"
+                       Grid.RowSpan="2"
+                       StrokeThickness="0">
+            </Rectangle>
+            <TextBlock Grid.Row="0"
+                       TextAlignment="Center"
+                       Text="{Binding Tag.Name}"
+                       HorizontalAlignment="Center"
+                       MinWidth="100"
+                       VerticalAlignment="Bottom">
+                <TextBlock.Style>
+                    <Style TargetType="{x:Type TextBlock}">
+                        <Setter Property="Background"
+                                Value="{StaticResource UnSetElementBrush}" />
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding Tag.Value}"
+                                         Value="True">
+                                <Setter Property="Background"
+                                        Value="{StaticResource IsSetElementBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+            </TextBlock>
+            <ContentControl Grid.Row="1"
+                            Content="{Binding}"
+                            ContentTemplateSelector="{StaticResource ElementTemplateSelector}">
+                <ContentControl.Style>
+                    <Style>
+                        <Setter Property="local:DynamicTemplateSelector.Templates">
+                            <Setter.Value>
+                                <local:TemplateCollection>
+                                    <local:Template Value="{x:Type local:WireViewModel}"
+                                                    DataTemplate="{StaticResource WireTemplate}" />
+                                    <local:Template Value="{x:Type local:ContactViewModel}"
+                                                    DataTemplate="{StaticResource ContactTemplate}" />
+                                    <local:Template Value="{x:Type local:CoilViewModel}"
+                                                    DataTemplate="{StaticResource CoilTemplate}" />
+                                    <local:Template Value="{x:Type local:FloatComparisonElementViewModel}"
+                                                    DataTemplate="{StaticResource FloatComparisonElementStyle}" />
+                                </local:TemplateCollection>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ContentControl.Style>
+            </ContentControl>
+        </Grid>
+    </Border>
+</UserControl>
