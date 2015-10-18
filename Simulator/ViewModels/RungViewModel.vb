@@ -40,6 +40,13 @@
         End Set
     End Property
 
+    Public ReadOnly Property CanBeScanned As Boolean
+        Get
+            Dim Last = Elements.Last
+            Return Last IsNot Nothing AndAlso TypeOf Last Is CoilViewModel
+        End Get
+    End Property
+
     Private _Ladder As LadderViewModel = Nothing
     Public Property Ladder As LadderViewModel
         Get
@@ -103,13 +110,30 @@
     End Sub
 
     Public Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
-        Dim source = DirectCast(dropInfo.Data, ElementViewModel)
-        If source IsNot Nothing AndAlso source.IsTemplate Then
-            dropInfo.Effects = DragDropEffects.Copy
-        Else
-            dropInfo.Effects = DragDropEffects.Move
+        If Not TypeOf dropInfo.Data Is ElementViewModel Then
+            dropInfo.Effects = DragDropEffects.None
+            Return
         End If
-        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
+        Dim source = DirectCast(dropInfo.Data, ElementViewModel)
+        Dim AcceptItem As Boolean = True
+        If TypeOf source Is CoilViewModel Then
+            Dim CoilsExist As Boolean = False
+            For Each El In Elements
+                If TypeOf El Is CoilViewModel Then
+                    dropInfo.Effects = DragDropEffects.None
+                    AcceptItem = False
+                    Exit For
+                End If
+            Next
+        End If
+        If AcceptItem Then
+            If source IsNot Nothing AndAlso source.IsTemplate Then
+                dropInfo.Effects = DragDropEffects.Copy
+            Else
+                dropInfo.Effects = DragDropEffects.Move
+            End If
+        End If
+        If AcceptItem Then GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
     End Sub
 
     Public Sub Drop(dropInfo As IDropInfo) Implements IDropTarget.Drop
@@ -126,7 +150,7 @@
             Return
         End If
         Element.Rung = Me
-        If Elements.Count = 0 Or dropInfo.InsertIndex >= Elements.Count Then
+        If Elements.Count = 0 Or dropInfo.InsertIndex >= Elements.Count Or TypeOf Element Is CoilViewModel Then
             Elements.Add(Element)
         Else
             Dim LE = LastElement

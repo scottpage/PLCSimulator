@@ -104,6 +104,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\TagListView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\TagView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -112,6 +120,7 @@
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Behaviors\InputBindingManager.vb" />
     <Compile Include="Common\UIHelper.vb" />
     <Compile Include="Elements\Contact.vb" />
     <Compile Include="Elements\Discrete.vb" />
@@ -147,6 +156,12 @@
     </Compile>
     <Compile Include="Views\RungView.xaml.vb">
       <DependentUpon>RungView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TagListView.xaml.vb">
+      <DependentUpon>TagListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TagView.xaml.vb">
+      <DependentUpon>TagView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>

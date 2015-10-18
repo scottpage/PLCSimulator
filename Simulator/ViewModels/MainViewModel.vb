@@ -19,6 +19,11 @@
         AvailableElements.Add(New CoilViewModel With {.IsTemplate = True})
         AvailableElements.Add(New FloatComparisonElementViewModel With {.IsTemplate = True})
 
+        For I = 0 To 50
+            Tags.Add(New DiscreteTagViewModel With {.Name = String.Format("Discrete Tag {0}", I.ToString)})
+            Tags.Add(New NumericTagViewModel With {.Name = String.Format("Numeric Tag {0}", I.ToString)})
+        Next
+
         For I2 = 1 To 5
             Dim R As New RungViewModel
             For I = 1 To 7
@@ -65,6 +70,24 @@
             If _AvailableElements Is Nothing Then _AvailableElements = New ObservableCollection(Of ElementViewModel)
             Return _AvailableElements
         End Get
+    End Property
+
+    Private _Tags As ObservableCollection(Of TagViewModel)
+    Public ReadOnly Property Tags As ObservableCollection(Of TagViewModel)
+        Get
+            If _Tags Is Nothing Then _Tags = New ObservableCollection(Of TagViewModel)
+            Return _Tags
+        End Get
+    End Property
+
+    Private _SelectedTag As TagViewModel = Nothing
+    Public Property SelectedTag As TagViewModel
+        Get
+            Return _SelectedTag
+        End Get
+        Set(ByVal Value As TagViewModel)
+            SetProperty(Function() SelectedTag, _SelectedTag, Value)
+        End Set
     End Property
 
     Private _Ladders As ObservableCollection(Of LadderViewModel)
@@ -149,6 +172,7 @@
                     Else
                         _CurrentRung = RungsCopy(RI)
                     End If
+                    If Not _CurrentRung.CanBeScanned Then Continue For
                     _CurrentRung.IsScanning = True
                     Dim ElementsCopy = _CurrentRung.Elements.ToArray
                     If ElementsCopy.Count.Equals(0) Then Continue While
@@ -179,7 +203,7 @@
                     _CurrentRung.IsScanning = False
                 Next
                 SelectedLadder.IsScanning = False
-                'System.Threading.Thread.Sleep(100)
+                System.Threading.Thread.Sleep(100)
             End While
         Catch ex As Exception
             'Thread aborted

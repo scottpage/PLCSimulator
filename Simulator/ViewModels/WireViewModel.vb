@@ -9,6 +9,12 @@
         MyBase.New(Nothing, id, ElementActionType.None)
     End Sub
 
+    Public Overrides ReadOnly Property SupportsTags As Boolean
+        Get
+            Return False
+        End Get
+    End Property
+
     Public Overrides Function Clone() As Object
         Return New WireViewModel
     End Function

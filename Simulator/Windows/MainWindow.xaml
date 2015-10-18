@@ -11,60 +11,77 @@
         WindowState="Maximized"
         WindowStartupLocation="CenterScreen">
     <DockPanel LastChildFill="True">
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File" />
-            <MenuItem Header="_Edit" />
-            <MenuItem Header="_View" />
-            <MenuItem Header="_Simulation">
-                <MenuItem Command="{Binding StartStopCommand}">
-                    <MenuItem.Style>
-                        <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="Header"
-                                    Value="Start" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsRunning}"
-                                             Value="True">
-                                    <Setter Property="Header"
-                                            Value="Stop" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </MenuItem.Style>
+        <StackPanel DockPanel.Dock="Top">
+            <Menu>
+                <MenuItem Header="_File" />
+                <MenuItem Header="_Edit" />
+                <MenuItem Header="_View" />
+                <MenuItem Header="_Simulation">
+                    <MenuItem Command="{Binding StartStopCommand}">
+                        <MenuItem.Style>
+                            <Style TargetType="{x:Type MenuItem}">
+                                <Setter Property="Header"
+                                        Value="Start" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRunning}"
+                                                 Value="True">
+                                        <Setter Property="Header"
+                                                Value="Stop" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
                 </MenuItem>
-            </MenuItem>
-        </Menu>
-        <ToolBarTray DockPanel.Dock="Top"
-                     MaxHeight="50">
-            <ToolBar FontSize="18"
-                     FontWeight="Bold">
-                <Button Command="{Binding StartStopCommand}">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}">
-                            <Setter Property="Content">
-                                <Setter.Value>
-                                    <Image Source="/Simulator;component/Resources/GreenTriangle.png" />
-                                </Setter.Value>
-                            </Setter>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsRunning}"
-                                             Value="True">
-                                    <Setter Property="Content">
-                                        <Setter.Value>
-                                            <Image Source="/Simulator;component/Resources/RedSquare.png" />
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                </Button>
-                <Button Command="{Binding PauseSimulationCommand}">
-                    <Image Source="/Simulator;component/Resources/YellowPause.gif" />
-                </Button>
-                <TextBox Text="{Binding ScanTimeBetweenRungs}" />
-                <TextBox Text="{Binding ScanTimeBetweenElements}" />
-            </ToolBar>
-        </ToolBarTray>
+            </Menu>
+            <ToolBarTray DockPanel.Dock="Top"
+                         MaxHeight="60">
+                <ToolBar Header="Simulator"
+                         MaxHeight="60"
+                         FontSize="18"
+                         FontWeight="Bold">
+                    <Button Command="{Binding StartStopCommand}">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}">
+                                <Setter Property="Content">
+                                    <Setter.Value>
+                                        <Image Source="/Simulator;component/Resources/GreenTriangle.png" />
+                                    </Setter.Value>
+                                </Setter>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRunning}"
+                                                 Value="True">
+                                        <Setter Property="Content">
+                                            <Setter.Value>
+                                                <Image Source="/Simulator;component/Resources/RedSquare.png" />
+                                            </Setter.Value>
+                                        </Setter>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button Command="{Binding PauseSimulationCommand}">
+                        <Image Source="/Simulator;component/Resources/YellowPause.gif" />
+                    </Button>
+                    <StackPanel Margin="5,0,5,0">
+                        <TextBlock HorizontalAlignment="Center"
+                                   Text="Delay Between Rungs" />
+                        <TextBox HorizontalContentAlignment="Center"
+                                 Text="{Binding ScanTimeBetweenRungs}"
+                                 local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                    </StackPanel>
+                    <StackPanel  Margin="5,0,5,0">
+                        <TextBlock HorizontalAlignment="Center"
+                                   Text="Delay Between Elements" />
+                        <TextBox HorizontalContentAlignment="Center"
+                                 Text="{Binding ScanTimeBetweenElements}"
+                                 local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
+                    </StackPanel>
+                </ToolBar>
+            </ToolBarTray>
+        </StackPanel>
+        <local:TagListView DockPanel.Dock="Right" />
         <StatusBar DockPanel.Dock="Bottom"
                    MinHeight="25">
             <GroupItem />
@@ -75,10 +92,25 @@
                 <ColumnDefinition Width="0.005*" />
                 <ColumnDefinition Width="0.7975*" />
             </Grid.ColumnDefinitions>
-            <UniformGrid Grid.Column="0"
-                         Columns="2">
-
-            </UniformGrid>
+            <local:AvailableElementsView />
+            <!--<ItemsControl ItemsSource="{Binding AvailableElements}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <local:ElementView Margin="10"
+                                           dd:DragDrop.IsDragSource="True"
+                                           dd:DragDrop.IsDropTarget="False"
+                                           dd:DragDrop.DropHandler="{Binding}"
+                                           dd:DragDrop.DragDropCopyKeyState="LeftMouseButton" />
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="2"
+                                     Rows="5">
+                        </UniformGrid>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>-->
             <GridSplitter HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           Grid.Column="1" />
