@@ -13,7 +13,10 @@
     <DockPanel LastChildFill="True">
         <StackPanel DockPanel.Dock="Top">
             <Menu>
-                <MenuItem Header="_File" />
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Exit"
+                              Command="{Binding ExitCommand}" />
+                </MenuItem>
                 <MenuItem Header="_Edit" />
                 <MenuItem Header="_View" />
                 <MenuItem Header="_Simulation">
@@ -93,24 +96,6 @@
                 <ColumnDefinition Width="0.7975*" />
             </Grid.ColumnDefinitions>
             <local:AvailableElementsView />
-            <!--<ItemsControl ItemsSource="{Binding AvailableElements}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <local:ElementView Margin="10"
-                                           dd:DragDrop.IsDragSource="True"
-                                           dd:DragDrop.IsDropTarget="False"
-                                           dd:DragDrop.DropHandler="{Binding}"
-                                           dd:DragDrop.DragDropCopyKeyState="LeftMouseButton" />
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="2"
-                                     Rows="5">
-                        </UniformGrid>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-            </ItemsControl>-->
             <GridSplitter HorizontalAlignment="Stretch"
                           VerticalAlignment="Stretch"
                           Grid.Column="1" />

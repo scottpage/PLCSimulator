@@ -53,18 +53,23 @@
                  dd:DragDrop.DropHandler="{Binding}"
                  dd:DragDrop.DragDropCopyKeyState="LeftMouseButton"
                  SelectionMode="Single">
-            <ItemsControl.ItemsPanel>
+            <ListBox.InputBindings>
+                <KeyBinding Key="Delete"
+                            Command="{Binding DeleteSelectedElementCommand}" />
+            </ListBox.InputBindings>
+            <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal"
                                 HorizontalAlignment="Stretch"
                                 MinHeight="100" />
                 </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
                 <ItemContainerTemplate>
-                    <local:ElementView MinWidth="100" MinHeight="100" />
+                    <local:ElementView MinWidth="100"
+                                       MinHeight="100" />
                 </ItemContainerTemplate>
-            </ItemsControl.ItemTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
     </Grid>
 </UserControl>

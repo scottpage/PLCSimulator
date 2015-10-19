@@ -111,7 +111,7 @@
 
     Public Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
         If Not TypeOf dropInfo.Data Is ElementViewModel Then
-            dropInfo.Effects = DragDropEffects.None
+            dropInfo.NotHandled = True
             Return
         End If
         Dim source = DirectCast(dropInfo.Data, ElementViewModel)
@@ -162,7 +162,33 @@
         End If
         Ladder.PadRungs()
         SelectedElement = Element
-        SourceCollection.ToList.ForEach(Sub(x) x.Invalidate())
+        If SourceCollection IsNot Nothing Then SourceCollection.ToList.ForEach(Sub(x) x.Invalidate())
     End Sub
+
+#Region "DeleteSelectedElementCommand"
+
+    Private _DeleteSelectedElementCommand As ICommand
+    Public ReadOnly Property DeleteSelectedElementCommand As ICommand
+        Get
+            If _DeleteSelectedElementCommand Is Nothing Then _DeleteSelectedElementCommand = New RelayCommand(AddressOf DeleteSelectedElement, AddressOf CanDeleteSelectedElement)
+            Return _DeleteSelectedElementCommand
+        End Get
+    End Property
+
+    Private Function CanDeleteSelectedElement(obj As Object) As Boolean
+        Return SelectedElement IsNot Nothing
+    End Function
+
+    Private Sub DeleteSelectedElement(obj As Object)
+        Dim LastIndex = Elements.IndexOf(SelectedElement)
+        Elements.Remove(SelectedElement)
+        If LastIndex >= Elements.Count - 1 Then
+            SelectedElement = Elements.LastOrDefault
+        Else
+            SelectedElement = Elements(LastIndex)
+        End If
+    End Sub
+
+#End Region
 
 End Class

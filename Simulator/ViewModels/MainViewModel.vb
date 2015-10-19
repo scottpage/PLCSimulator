@@ -203,7 +203,7 @@
                     _CurrentRung.IsScanning = False
                 Next
                 SelectedLadder.IsScanning = False
-                System.Threading.Thread.Sleep(100)
+                System.Threading.Thread.Sleep(10)
             End While
         Catch ex As Exception
             'Thread aborted

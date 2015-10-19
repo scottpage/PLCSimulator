@@ -13,7 +13,18 @@
         rung.Ladder = Me
         rung.Number = Rungs.Count + 1
         Rungs.Add(rung)
+        SelectedRung = rung
     End Sub
+
+    Private _SelectedRung As RungViewModel = Nothing
+    Public Property SelectedRung As RungViewModel
+        Get
+            Return _SelectedRung
+        End Get
+        Set(ByVal Value As RungViewModel)
+            SetProperty(Function() SelectedRung, _SelectedRung, Value)
+        End Set
+    End Property
 
     Protected Overrides Function OnEvaluate(previousScanable As ScanableViewModel, nextScanable As ScanableViewModel) As Boolean
         Return True
@@ -36,5 +47,31 @@
             R.Resize(LongestRungLength)
         Next
     End Sub
+
+#Region "DeleteSelectedRungCommand"
+
+    Private _DeleteSelectedRungCommand As ICommand
+    Public ReadOnly Property DeleteSelectedRungCommand As ICommand
+        Get
+            If _DeleteSelectedRungCommand Is Nothing Then _DeleteSelectedRungCommand = New RelayCommand(AddressOf DeleteSelectedRung, AddressOf CanDeleteSelectedRung)
+            Return _DeleteSelectedRungCommand
+        End Get
+    End Property
+
+    Private Function CanDeleteSelectedRung(obj As Object) As Boolean
+        Return SelectedRung IsNot Nothing
+    End Function
+
+    Private Sub DeleteSelectedRung(obj As Object)
+        Dim LastIndex = Rungs.IndexOf(SelectedRung)
+        Rungs.Remove(SelectedRung)
+        If LastIndex >= Rungs.Count - 1 Then
+            SelectedRung = Rungs.LastOrDefault
+        Else
+            SelectedRung = Rungs(LastIndex)
+        End If
+    End Sub
+
+#End Region
 
 End Class

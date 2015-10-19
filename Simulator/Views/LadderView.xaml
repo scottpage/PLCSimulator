@@ -10,12 +10,17 @@
              d:DesignWidth="300">
     <ScrollViewer VerticalScrollBarVisibility="Auto"
                   HorizontalScrollBarVisibility="Auto">
-        <ItemsControl ItemsSource="{Binding Rungs}">
-            <ItemsControl.ItemTemplate>
+        <ListBox ItemsSource="{Binding Rungs}"
+                 SelectedItem="{Binding SelectedRung}">
+            <ListBox.InputBindings>
+                <KeyBinding Key="Delete"
+                            Command="{Binding DeleteSelectedRungCommand}" />
+            </ListBox.InputBindings>
+            <ListBox.ItemTemplate>
                 <DataTemplate>
                     <local:RungView />
                 </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+            </ListBox.ItemTemplate>
+        </ListBox>
     </ScrollViewer>
 </UserControl>

@@ -1,6 +1,6 @@
 ﻿Public MustInherit Class ElementViewModel
     Inherits ScanableViewModel
-    Implements ICloneable, IDropTarget, IDragSource
+    Implements ICloneable, IDropTarget
 
     Protected Sub New(tag As TagViewModel, actionType As ElementActionType)
         _Id = Guid.NewGuid
@@ -144,43 +144,27 @@
     Public Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
         If Not TypeOf dropInfo.Data Is TagViewModel Then
             If TypeOf dropInfo.Data Is ElementViewModel And Rung IsNot Nothing Then
-                Rung.DragOver(dropInfo)
+                dropInfo.NotHandled = True
             Else
                 dropInfo.Effects = DragDropEffects.None
                 Return
             End If
         Else
-            dropInfo.Effects = DragDropEffects.Copy
+            If Tag.GetType.Equals(dropInfo.Data.GetType) Then
+                dropInfo.Effects = DragDropEffects.Copy
+            Else
+                dropInfo.Effects = DragDropEffects.None
+                Return
+            End If
         End If
         GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
     End Sub
 
     Public Sub Drop(dropInfo As IDropInfo) Implements IDropTarget.Drop
-        If Not TypeOf dropInfo Is TagViewModel Then
-            If TypeOf dropInfo Is ElementViewModel And Rung IsNot Nothing Then
-                Rung.Drop(dropInfo)
-            Else
-                Dim T = DirectCast(dropInfo.Data, TagViewModel)
-                Tag = T
-            End If
+        If TypeOf dropInfo.Data Is TagViewModel Then
+            Dim T = DirectCast(dropInfo.Data, TagViewModel)
+            Tag = T
         End If
-    End Sub
-
-    Public Function CanStartDrag(dragInfo As IDragInfo) As Boolean Implements IDragSource.CanStartDrag
-        Return dragInfo.MouseButton = MouseButton.Left
-    End Function
-
-    Public Sub DragCancelled() Implements IDragSource.DragCancelled
-
-    End Sub
-
-    Public Sub Dropped(dropInfo As IDropInfo) Implements IDragSource.Dropped
-
-    End Sub
-
-    Public Sub StartDrag(dragInfo As IDragInfo) Implements IDragSource.StartDrag
-        dragInfo.Data = Me
-        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.StartDrag(dragInfo)
     End Sub
 
 End Class
