@@ -141,6 +141,17 @@
 
 #End Region
 
+    Private _CanAcceptDraggedTag As Boolean
+    Public ReadOnly Property CanAcceptDraggedTag As Boolean
+        Get
+            Return _CanAcceptDraggedTag
+        End Get
+    End Property
+
+    Protected Overridable Function CanAcceptTagDraggedTag(tag As TagViewModel) As Boolean
+        Return False
+    End Function
+
     Public Overridable Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
         If Not TypeOf dropInfo.Data Is TagViewModel Then
             If TypeOf dropInfo.Data Is ElementViewModel And Rung IsNot Nothing Then
