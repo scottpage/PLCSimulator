@@ -28,7 +28,7 @@
             Dim R As New RungViewModel
             For I = 1 To 7
                 Dim D As New ContactViewModel
-                D.Tag.Name = String.Format("Tag {0}", I.ToString)
+                D.Tag = Tags(0)
                 D.IsNormallyClosed = True
                 D.DiscreteTag.Value = I > 3
                 D.Rung = R
@@ -243,8 +243,6 @@
     End Sub
 
 #End Region
-
-
 
 #Region "ExitCommand"
 

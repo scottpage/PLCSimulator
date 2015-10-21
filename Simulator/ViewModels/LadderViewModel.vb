@@ -70,6 +70,36 @@
         Else
             SelectedRung = Rungs(LastIndex)
         End If
+        ReindexRungNumbers()
+    End Sub
+
+    Private Sub ReindexRungNumbers()
+        Dim CurRunId As Integer = 1
+        For Each R In Rungs
+            R.Number = CurRunId
+            CurRunId += 1
+        Next
+    End Sub
+
+#End Region
+
+#Region "AppendRungCommand"
+
+    Private _AppendRungCommand As ICommand
+    Public ReadOnly Property AppendRungCommand As ICommand
+        Get
+            If _AppendRungCommand Is Nothing Then _AppendRungCommand = New RelayCommand(AddressOf AppendRung, AddressOf CanAppendRung)
+            Return _AppendRungCommand
+        End Get
+    End Property
+
+    Private Function CanAppendRung(obj As Object) As Boolean
+        Return True
+    End Function
+
+    Private Sub AppendRung(obj As Object)
+        Rungs.Add(New RungViewModel With {.Ladder = Me, .Number = Rungs.Count + 1})
+        SelectedRung = Rungs.LastOrDefault
     End Sub
 
 #End Region

@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:ScottPage.Simulators.Simulator"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
+             MinWidth="100"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Style>

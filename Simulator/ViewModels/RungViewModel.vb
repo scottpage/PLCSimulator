@@ -58,33 +58,32 @@
     End Property
 
     Protected Overrides Function OnEvaluate(previousScanable As ScanableViewModel, nextScanable As ScanableViewModel) As Boolean
-        Return True
+        Return Elements.Last IsNot Nothing AndAlso Elements.Last.IsSet
     End Function
 
     Public Function GetPreviousElement(element As ElementViewModel) As ElementViewModel
         Dim ElementsCopy = Elements.ToList
         If ElementsCopy.First Is element Then Return Nothing
         Dim Index = ElementsCopy.IndexOf(element)
-        Return Elements(Index - 1)
+        Return ElementsCopy(Index - 1)
     End Function
 
     Public Function GetNextElement(element As ElementViewModel) As ElementViewModel
+        Dim ElementsCopy = Elements.ToList
         If Elements.Last Is element Then Return Nothing
         Dim Index = Elements.IndexOf(element)
-        Return Elements(Index + 1)
+        Return ElementsCopy(Index + 1)
     End Function
 
     Public ReadOnly Property FirstElement As ElementViewModel
         Get
-            If Elements.Count.Equals(0) Then Return Nothing
-            Return Elements(0)
+            Return Elements.FirstOrDefault
         End Get
     End Property
 
     Public ReadOnly Property LastElement As ElementViewModel
         Get
-            If Elements.Count.Equals(0) Then Return Nothing
-            Return Elements.Last
+            Return Elements.LastOrDefault
         End Get
     End Property
 

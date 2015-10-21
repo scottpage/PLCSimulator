@@ -1,6 +1,8 @@
 ﻿Public Class FloatComparisonElementViewModel
     Inherits DiscreteViewModel
 
+    Dim Tag1 As NumericTagViewModel
+
     Public Sub New()
         MyBase.New()
     End Sub
@@ -9,24 +11,23 @@
         MyBase.New(id)
     End Sub
 
-    Private _Value1 As Single
-    Public Property Value1 As Single
+    Public Shadows Property Tag As NumericTagViewModel
         Get
-            Return _Value1
+            If MyBase.Tag IsNot Nothing AndAlso TypeOf MyBase.Tag Is NumericTagViewModel Then Return DirectCast(MyBase.Tag, NumericTagViewModel)
+            Return Nothing
         End Get
-        Set(ByVal Value As Single)
-            SetProperty(Function() Value1, _Value1, Value)
-            Dim ValueTypeCode = Value.GetType.IsValueType
+        Set(value As NumericTagViewModel)
+            MyBase.Tag = value
         End Set
     End Property
 
-    Private _Value2 As Single
-    Public Property Value2 As Single
+    Private _Tag2 As NumericTagViewModel
+    Public Property Tag2 As NumericTagViewModel
         Get
-            Return _Value2
+            Return _Tag2
         End Get
-        Set(ByVal Value As Single)
-            SetProperty(Function() Value2, _Value2, Value)
+        Set(ByVal Value As NumericTagViewModel)
+            SetProperty(Function() Tag2, _Tag2, Value)
         End Set
     End Property
 
@@ -41,7 +42,7 @@
     End Property
 
     Public Overrides Function Clone() As Object
-        Return New FloatComparisonElementViewModel With {.Value1 = Value1, .Value2 = Value2}
+        Return New FloatComparisonElementViewModel With {.Tag = Tag, .Tag2 = Tag2}
     End Function
 
     Protected Overrides Function OnEvaluateElement(previousElement As ElementViewModel, nextElement As ElementViewModel) As Boolean
@@ -52,12 +53,36 @@
 
     Private Function Compare() As ComparisonOperation
         Dim Result As ComparisonOperation = ComparisonOperation.Invalid
-        If Value1.CompareTo(Value2) < 0 Then Result = ComparisonOperation.LessThan
-        If Value1.CompareTo(Value2) > 0 Then Result = ComparisonOperation.GreaterThan
-        If Value1.CompareTo(Value2) <= 0 Then Result = ComparisonOperation.LessThanOrEqualTo
-        If Value1.CompareTo(Value2) >= 0 Then Result = ComparisonOperation.GreaterThanOrEqualTo
-        If Value1.CompareTo(Value2) = 0 Then Result = ComparisonOperation.EqualTo
+        If Tag IsNot Nothing And Tag2 IsNot Nothing Then
+            If Tag.Value.CompareTo(Tag2.Value) < 0 Then Result = ComparisonOperation.LessThan
+            If Tag.Value.CompareTo(Tag2.Value) > 0 Then Result = ComparisonOperation.GreaterThan
+            If Tag.Value.CompareTo(Tag2.Value) <= 0 Then Result = ComparisonOperation.LessThanOrEqualTo
+            If Tag.Value.CompareTo(Tag2.Value) >= 0 Then Result = ComparisonOperation.GreaterThanOrEqualTo
+            If Tag.Value.CompareTo(Tag2.Value) = 0 Then Result = ComparisonOperation.EqualTo
+        End If
         Return Result
     End Function
+
+    Public Overrides Sub DragOver(dropInfo As IDropInfo)
+        If TypeOf dropInfo.Data Is NumericTagViewModel Then
+            dropInfo.Effects = DragDropEffects.Copy
+            GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
+        Else
+            MyBase.DragOver(dropInfo)
+        End If
+    End Sub
+
+    Public Overrides Sub Drop(dropInfo As IDropInfo)
+        If TypeOf dropInfo.Data Is NumericTagViewModel Then
+            Dim VM = DirectCast(dropInfo.Data, NumericTagViewModel)
+            If dropInfo.DropPosition.Y < dropInfo.VisualTarget.RenderSize.Height / 2 Then
+                Tag = VM
+            Else
+                Tag2 = VM
+            End If
+        Else
+            MyBase.Drop(dropInfo)
+        End If
+    End Sub
 
 End Class

@@ -8,19 +8,33 @@
              Background="LightGray"
              d:DesignHeight="300"
              d:DesignWidth="300">
-    <ScrollViewer VerticalScrollBarVisibility="Auto"
-                  HorizontalScrollBarVisibility="Auto">
-        <ListBox ItemsSource="{Binding Rungs}"
-                 SelectedItem="{Binding SelectedRung}">
-            <ListBox.InputBindings>
-                <KeyBinding Key="Delete"
-                            Command="{Binding DeleteSelectedRungCommand}" />
-            </ListBox.InputBindings>
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <local:RungView />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </ScrollViewer>
+    <Grid>
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <ContextMenu.InputBindings>
+                    <MouseBinding MouseAction="RightClick" />
+                </ContextMenu.InputBindings>
+                <MenuItem Header="Append Rung"
+                          Command="{Binding AppendRungCommand}" />
+                <MenuItem Header="Delete Rung"
+                          Command="{Binding DeleteSelectedRungCommand}" />
+            </ContextMenu>
+        </Grid.ContextMenu>
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto">
+            <ListBox x:Name="RungsListBox" ItemsSource="{Binding Rungs}"
+                     SelectedItem="{Binding SelectedRung}"
+                     Background="LightGray">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Delete"
+                                Command="{Binding DeleteSelectedRungCommand}" />
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <local:RungView />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </ScrollViewer>
+    </Grid>
 </UserControl>

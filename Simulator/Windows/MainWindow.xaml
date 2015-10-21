@@ -69,14 +69,14 @@
                     </Button>
                     <StackPanel Margin="5,0,5,0">
                         <TextBlock HorizontalAlignment="Center"
-                                   Text="Delay Between Rungs" />
+                                   Text="Delay Between Rungs (ms)" />
                         <TextBox HorizontalContentAlignment="Center"
                                  Text="{Binding ScanTimeBetweenRungs}"
                                  local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
                     </StackPanel>
                     <StackPanel  Margin="5,0,5,0">
                         <TextBlock HorizontalAlignment="Center"
-                                   Text="Delay Between Elements" />
+                                   Text="Delay Between Elements (ms)" />
                         <TextBox HorizontalContentAlignment="Center"
                                  Text="{Binding ScanTimeBetweenElements}"
                                  local:InputBindingsManager.UpdatePropertySourceWhenEnterPressed="TextBox.Text" />
@@ -84,22 +84,22 @@
                 </ToolBar>
             </ToolBarTray>
         </StackPanel>
-        <local:TagListView DockPanel.Dock="Right" />
+        <local:TagListView x:Name="TagsView" DockPanel.Dock="Right" />
         <StatusBar DockPanel.Dock="Bottom"
                    MinHeight="25">
             <GroupItem />
         </StatusBar>
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="0.1975*" />
-                <ColumnDefinition Width="0.005*" />
-                <ColumnDefinition Width="0.7975*" />
+                <ColumnDefinition Width="0.15*" />
+                <ColumnDefinition Width="0.01*" />
+                <ColumnDefinition Width="0.75*" />
             </Grid.ColumnDefinitions>
-            <local:AvailableElementsView />
-            <GridSplitter HorizontalAlignment="Stretch"
-                          VerticalAlignment="Stretch"
+            <local:AvailableElementsView Grid.Column="0" />
+            <GridSplitter VerticalAlignment="Stretch"
+                          HorizontalAlignment="Stretch"
                           Grid.Column="1" />
-            <local:LadderView Grid.Column="1"
+            <local:LadderView x:Name="RungsLadderView" Grid.Column="2"
                               DataContext="{Binding SelectedLadder}"
                               Grid.ColumnSpan="2" />
         </Grid>

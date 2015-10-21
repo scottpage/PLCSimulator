@@ -3,9 +3,16 @@
     Private WithEvents _MainWindow As MainWindow
     Private _ExitClosedMainWindow As Boolean
 
+    Public ReadOnly Property MyApplicationMainWindow As MainWindow
+        Get
+            Return _MainWindow
+        End Get
+    End Property
+
     Protected Overrides Sub OnStartup(e As StartupEventArgs)
         MyBase.OnStartup(e)
         _MainWindow = New MainWindow
+        _MainWindow.Title = My.Application.Info.Title
         'TODO:  Uncomment after release
         _MainWindow.DataContext = MainViewModel.Instance
         _MainWindow.Show()

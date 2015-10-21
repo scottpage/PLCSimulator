@@ -11,6 +11,7 @@
     <ScrollViewer HorizontalScrollBarVisibility="Auto"
                   VerticalScrollBarVisibility="Auto">
         <ItemsControl x:Name="ElementItemsControl"
+                      Background="LightGray"
                       ItemsSource="{Binding AvailableElements}"
                       dd:DragDrop.IsDragSource="True"
                       dd:DragDrop.IsDropTarget="False"

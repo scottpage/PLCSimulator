@@ -112,10 +112,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Windows\EditTagWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Windows\MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Compile Include="Adorners\TagDropAdorner.vb" />
     <Compile Include="Application.xaml.vb">
       <DependentUpon>Application.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -136,6 +141,7 @@
     <Compile Include="ViewModels\NumericElementViewModel.vb" />
     <Compile Include="ViewModels\RungViewModel.vb" />
     <Compile Include="ViewModels\ScanableViewModel.vb" />
+    <Compile Include="ViewModels\Tags\EditTagViewModel.vb" />
     <Compile Include="ViewModels\Tags\NumericTagViewModel.vb" />
     <Compile Include="Views\AvailableElementsView.xaml.vb">
       <DependentUpon>AvailableElementsView.xaml</DependentUpon>
@@ -162,6 +168,9 @@
     </Compile>
     <Compile Include="Views\TagView.xaml.vb">
       <DependentUpon>TagView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Windows\EditTagWindow.xaml.vb">
+      <DependentUpon>EditTagWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Windows\MainWindow.xaml.vb">
       <DependentUpon>MainWindow.xaml</DependentUpon>

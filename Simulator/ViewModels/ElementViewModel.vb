@@ -121,7 +121,7 @@
         OnPropertyChanged(Function() IsRungRightEnd)
     End Sub
 
-#Region "Commands"
+#Region "RemoveCommand"
 
     Private _RemoveCommand As ICommand
     Public ReadOnly Property RemoveCommand As ICommand
@@ -141,7 +141,7 @@
 
 #End Region
 
-    Public Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
+    Public Overridable Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
         If Not TypeOf dropInfo.Data Is TagViewModel Then
             If TypeOf dropInfo.Data Is ElementViewModel And Rung IsNot Nothing Then
                 dropInfo.NotHandled = True
@@ -160,7 +160,7 @@
         GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
     End Sub
 
-    Public Sub Drop(dropInfo As IDropInfo) Implements IDropTarget.Drop
+    Public Overridable Sub Drop(dropInfo As IDropInfo) Implements IDropTarget.Drop
         If TypeOf dropInfo.Data Is TagViewModel Then
             Dim T = DirectCast(dropInfo.Data, TagViewModel)
             Tag = T

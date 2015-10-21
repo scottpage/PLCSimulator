@@ -1,23 +1,61 @@
 ﻿<UserControl x:Class="TagListView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
-             mc:Ignorable="d" 
+             xmlns:local="clr-namespace:ScottPage.Simulators.Simulator"
+             mc:Ignorable="d"
              MinWidth="150"
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <ListBox ItemsSource="{Binding Tags}"
-                 dd:DragDrop.IsDragSource="True"
-                 dd:DragDrop.IsDropTarget="True"
-                 dd:DragDrop.UseDefaultEffectDataTemplate="True"
-                 dd:DragDrop.UseDefaultDragAdorner="True">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Name}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </Grid>
+             d:DesignHeight="300"
+             d:DesignWidth="300">
+    <UserControl.Resources>
+
+        <DataTemplate x:Key="DiscreteTagViewModelDataTemplate"
+                      DataType="{x:Type local:DiscreteTagViewModel}">
+            <TextBlock Text="{Binding Name}">
+                <TextBlock.InputBindings>
+                    <MouseBinding MouseAction="LeftDoubleClick"
+                                  Command="{Binding EditCommand}" />
+                </TextBlock.InputBindings>
+            </TextBlock>
+        </DataTemplate>
+
+        <DataTemplate x:Key="NumericTagViewModelDataTemplate"
+                      DataType="{x:Type local:NumericTagViewModel}">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="{Binding Name}">
+                    <TextBlock.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick"
+                                      Command="{Binding EditCommand}" />
+                    </TextBlock.InputBindings>
+                </TextBlock>
+                <TextBlock Text="{Binding Value, StringFormat={}  ({0:F})}" />
+            </StackPanel>
+        </DataTemplate>
+
+        <local:DynamicTemplateSelector x:Key="TagViewModelTemplateSelector" />
+        
+    </UserControl.Resources>
+    <ListBox x:Name="TagsListBox" ItemsSource="{Binding Tags}"
+             dd:DragDrop.IsDragSource="True"
+             dd:DragDrop.IsDropTarget="True"
+             dd:DragDrop.UseDefaultEffectDataTemplate="True"
+             dd:DragDrop.UseDefaultDragAdorner="True"
+             ItemTemplateSelector="{StaticResource ElementTemplateSelector}">
+        <ListBox.Style>
+            <Style>
+                <Setter Property="local:DynamicTemplateSelector.Templates">
+                    <Setter.Value>
+                        <local:TemplateCollection>
+                            <local:Template Value="{x:Type local:DiscreteTagViewModel}"
+                                            DataTemplate="{StaticResource DiscreteTagViewModelDataTemplate}" />
+                            <local:Template Value="{x:Type local:NumericTagViewModel}"
+                                            DataTemplate="{StaticResource NumericTagViewModelDataTemplate}" />
+                        </local:TemplateCollection>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ListBox.Style>
+    </ListBox>
 </UserControl>

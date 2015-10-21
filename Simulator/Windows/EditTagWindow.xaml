@@ -1,0 +1,13 @@
+﻿<Window x:Class="EditTagWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="EditTagWindow"
+        Height="300"
+        Width="300">
+    <StackPanel>
+        <TextBox Text="{Binding TagName, UpdateSourceTrigger=PropertyChanged}" />
+        <Button Command="{Binding UpdateTagCommand}"
+                Content="Update"
+                MouseUp="Button_MouseUp" />
+    </StackPanel>
+</Window>

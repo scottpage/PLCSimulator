@@ -194,7 +194,7 @@
                 <TextBlock Grid.Row="0"
                            HorizontalAlignment="Center"
                            TextAlignment="Center"
-                           Text="{Binding Value1}" />
+                           Text="{Binding Tag.Value}" />
                 <TextBlock  Grid.Row="1"
                             HorizontalAlignment="Center"
                             TextAlignment="Center"
@@ -202,7 +202,7 @@
                 <TextBlock Grid.Row="2"
                            HorizontalAlignment="Center"
                            TextAlignment="Center"
-                           Text="{Binding Value2}" />
+                           Text="{Binding Tag2.Value}" />
             </Grid>
         </DataTemplate>
 
