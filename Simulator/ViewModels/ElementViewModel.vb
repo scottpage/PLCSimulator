@@ -150,6 +150,11 @@
                 Return
             End If
         Else
+            ' Fix issue #1 in master (drag over non tag element)
+            If Tag Is Nothing Then
+                dropInfo.Effects = DragDropEffects.None
+                Return
+            End If
             If Tag.GetType.Equals(dropInfo.Data.GetType) Then
                 dropInfo.Effects = DragDropEffects.Copy
             Else
