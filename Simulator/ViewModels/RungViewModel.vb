@@ -108,59 +108,87 @@
         Next
     End Sub
 
+    Private _IsReceiverOfCurrentDraggedItem As Boolean
+    Public ReadOnly Property IsReceiverOfCurrentDraggedItem As Boolean
+        Get
+            Return _IsReceiverOfCurrentDraggedItem
+        End Get
+    End Property
+
+    Private Function CheckIfDraggedItemCanBeAccepted(item As Object) As Boolean
+        Dim IsAcceptable = CanAcceptDraggedItem(item)
+        SetProperty(Function() IsReceiverOfCurrentDraggedItem, _IsReceiverOfCurrentDraggedItem, IsAcceptable)
+        Return IsAcceptable
+    End Function
+
+    Protected Overridable Function CanAcceptDraggedItem(item As Object) As Boolean
+        Dim IsItemNothing = item Is Nothing
+        Dim IsItemCorrectType = TypeOf item Is ElementViewModel
+        Return Not IsItemNothing And IsItemCorrectType
+    End Function
+
     Public Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
-        If Not TypeOf dropInfo.Data Is ElementViewModel Then
-            dropInfo.NotHandled = True
-            Return
+        'Initial assumption is that we cannot accept the dragged item
+        dropInfo.Effects = DragDropEffects.None
+        dropInfo.NotHandled = True
+
+        'Check if we can accept the dragged item
+        If CheckIfDraggedItemCanBeAccepted(dropInfo.Data) Then
+            'We can so update the dropInfo with correct info
+            dropInfo.Effects = DragDropEffects.Copy
+            dropInfo.NotHandled = False
+
+            'Since we can accept the item and we know it's a type of ElementViewModel then cast the dropInfo.Data to ElementViewModel
+            Dim Element = DirectCast(dropInfo.Data, ElementViewModel)
+            'If we have a template than don't move, just copy
+            If Element.IsTemplate Then dropInfo.Effects = DragDropEffects.Copy
+
         End If
-        Dim source = DirectCast(dropInfo.Data, ElementViewModel)
-        Dim AcceptItem As Boolean = True
-        If TypeOf source Is CoilViewModel Then
-            Dim CoilsExist As Boolean = False
-            For Each El In Elements
-                If TypeOf El Is CoilViewModel Then
-                    dropInfo.Effects = DragDropEffects.None
-                    AcceptItem = False
-                    Exit For
-                End If
-            Next
-        End If
-        If AcceptItem Then
-            If source IsNot Nothing AndAlso source.IsTemplate Then
-                dropInfo.Effects = DragDropEffects.Copy
-            Else
-                dropInfo.Effects = DragDropEffects.Move
-            End If
-        End If
-        If AcceptItem Then GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
     End Sub
 
     Public Sub Drop(dropInfo As IDropInfo) Implements IDropTarget.Drop
+        'We don't need null items or sourc collections
+        If dropInfo.Data Is Nothing Or dropInfo.DragInfo.SourceCollection Is Nothing Then Return
+        'We require an element and a source collection
+        If Not TypeOf dropInfo.Data Is ElementViewModel Or Not TypeOf dropInfo.DragInfo.SourceCollection Is ObservableCollection(Of ElementViewModel) Then Return
+
+        SetProperty(Function() IsReceiverOfCurrentDraggedItem, _IsReceiverOfCurrentDraggedItem, False)
+
         Dim Element = DirectCast(dropInfo.Data, ElementViewModel)
         Dim SourceCollection = DirectCast(dropInfo.DragInfo.SourceCollection, ObservableCollection(Of ElementViewModel))
+
+        'If this element is a template (dragged from the available elements panel)
         If Element.IsTemplate Then
+            'Then copy (clone) the element
             Element = DirectCast(Element.Clone, ElementViewModel)
+            'and set it to be a usable element
             Element.IsTemplate = False
+            'We also don't want to remove the element because that would prevent future use of the template element in the available elements panel
         Else
+            'Since this element is not a template (we received it from another rung) then we remove it from the source collection
             SourceCollection.Remove(Element)
         End If
-        If Element Is Nothing Then
-            dropInfo.Effects = DragDropEffects.None
-            Return
-        End If
+
+        'The elements new home is here
         Element.Rung = Me
+
+        'If this is our first element, the insert postion is after our last element, or if it's an end-only element (currently only CoilViewModel)
         If Elements.Count = 0 Or dropInfo.InsertIndex >= Elements.Count Or TypeOf Element Is CoilViewModel Then
+            'then we add the element to the end of our existing elements collection
             Elements.Add(Element)
         Else
-            Dim LE = LastElement
-            If LE Is Nothing Then
-                Elements.Add(Element)
-            Else
-                Elements.Insert(dropInfo.InsertIndex, Element)
-            End If
+            'Otherwise we insert it at the dropInfo.InsertIndex position
+            Elements.Insert(dropInfo.InsertIndex, Element)
         End If
+
+        'Tell our ladder to update the other rungs to match our element count (this may go away later and be replaced by a specified maximum rung element count)
         Ladder.PadRungs()
+
+        'Set the selected element of our elements collecftion as the newly added element for user friendliness
         SelectedElement = Element
+
+        'Tell the source collection that it needs to update (invalidate) it's elements so they can cause a redraw for visual effect
         If SourceCollection IsNot Nothing Then SourceCollection.ToList.ForEach(Sub(x) x.Invalidate())
     End Sub
 

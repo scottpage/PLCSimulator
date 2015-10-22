@@ -141,46 +141,52 @@
 
 #End Region
 
-    Private _CanAcceptDraggedTag As Boolean
-    Public ReadOnly Property CanAcceptDraggedTag As Boolean
+    Private _IsReceiverOfCurrentDraggedItem As Boolean
+    Public ReadOnly Property IsReceiverOfCurrentDraggedItem As Boolean
         Get
-            Return _CanAcceptDraggedTag
+            Return _IsReceiverOfCurrentDraggedItem
         End Get
     End Property
 
-    Protected Overridable Function CanAcceptTagDraggedTag(tag As TagViewModel) As Boolean
-        Return False
+    Private Function CheckIfDraggedItemCanBeAccepted(item As Object) As Boolean
+        Dim IsAcceptable = CanAcceptDraggedItem(item)
+        SetProperty(Function() IsReceiverOfCurrentDraggedItem, _IsReceiverOfCurrentDraggedItem, IsAcceptable)
+        Return IsAcceptable
+    End Function
+
+    Protected Overridable Function CanAcceptDraggedItem(item As Object) As Boolean
+        Dim IsItemNothing = item Is Nothing
+        Dim IsTagNothing = Tag Is Nothing
+        Dim IsItemSameTypeAsTag = Not IsTagNothing AndAlso Tag.GetType.Equals(item.GetType)
+        Return IsItemNothing Or IsItemSameTypeAsTag
     End Function
 
     Public Overridable Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
-        If Not TypeOf dropInfo.Data Is TagViewModel Then
-            If TypeOf dropInfo.Data Is ElementViewModel And Rung IsNot Nothing Then
-                dropInfo.NotHandled = True
-            Else
-                dropInfo.Effects = DragDropEffects.None
-                Return
-            End If
-        Else
-            ' Fix issue #1 in master (drag over non tag element)
-            If Tag Is Nothing Then
-                dropInfo.Effects = DragDropEffects.None
-                Return
-            End If
-            If Tag.GetType.Equals(dropInfo.Data.GetType) Then
-                dropInfo.Effects = DragDropEffects.Copy
-            Else
-                dropInfo.Effects = DragDropEffects.None
-                Return
-            End If
+        'Initial assumption is that we cannot accept the dragged item
+        dropInfo.Effects = DragDropEffects.None
+        dropInfo.NotHandled = True
+
+        'Since this is an element the only type allowed, at the moment, is TagViewModel
+        'Checking for Tag not nothing fixes issue #1 in master (drag over non tag element)
+        'If Not TypeOf dropInfo.Data Is TagViewModel Or Tag Is Nothing Then Return  'This may not be needed since we are checking for an acceptable item later
+
+        'Check if we can accept the dragged item
+        If CheckIfDraggedItemCanBeAccepted(dropInfo.Data) Then
+            'We can so update the dropInfo with correct info
+            dropInfo.Effects = DragDropEffects.Copy
+            dropInfo.NotHandled = False
         End If
+        'Let Gong handle the rest
         GongSolutions.Wpf.DragDrop.DragDrop.DefaultDropHandler.DragOver(dropInfo)
     End Sub
 
     Public Overridable Sub Drop(dropInfo As IDropInfo) Implements IDropTarget.Drop
-        If TypeOf dropInfo.Data Is TagViewModel Then
-            Dim T = DirectCast(dropInfo.Data, TagViewModel)
-            Tag = T
+        If dropInfo.Data Is Nothing Then
+            Tag = Nothing
+        Else
+            If IsReceiverOfCurrentDraggedItem Then Tag = DirectCast(dropInfo.Data, TagViewModel)
         End If
+        SetProperty(Function() IsReceiverOfCurrentDraggedItem, _IsReceiverOfCurrentDraggedItem, False)
     End Sub
 
 End Class
