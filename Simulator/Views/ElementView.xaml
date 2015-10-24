@@ -81,11 +81,18 @@
                 <Setter Property="BorderBrush"
                         Value="Transparent" />
                 <Style.Triggers>
-                    <Trigger Property="IsMouseOver"
-                             Value="True">
-                        <Setter Property="BorderBrush"
-                                Value="Gray" />
-                    </Trigger>
+                    <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding IsMouseOver, Mode=OneWay, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UIElement}}}"
+                                       Value="True" />
+                            <Condition Binding="{Binding IsSelectable}"
+                                       Value="True" />
+                        </MultiDataTrigger.Conditions>
+                        <MultiDataTrigger.Setters>
+                            <Setter Property="BorderBrush"
+                                    Value="Gray" />
+                        </MultiDataTrigger.Setters>
+                    </MultiDataTrigger>
                 </Style.Triggers>
             </Style>
         </Border.Style>

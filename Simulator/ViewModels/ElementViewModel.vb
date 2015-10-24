@@ -8,10 +8,24 @@
         _ActionType = actionType
     End Sub
 
+    Protected Sub New(tag As TagViewModel, actionType As ElementActionType, isSelectable As Boolean)
+        _Id = Guid.NewGuid
+        _Tag = tag
+        _ActionType = actionType
+        _IsSelectable = isSelectable
+    End Sub
+
     Protected Sub New(tag As TagViewModel, id As Guid, actionType As ElementActionType)
         _Id = id
         _Tag = tag
         _ActionType = actionType
+    End Sub
+
+    Protected Sub New(tag As TagViewModel, id As Guid, actionType As ElementActionType, isSelectable As Boolean)
+        _Id = id
+        _Tag = tag
+        _ActionType = actionType
+        _IsSelectable = isSelectable
     End Sub
 
     Private _ActionType As ElementActionType = ElementActionType.None
@@ -39,6 +53,13 @@
         Set(ByVal Value As Boolean)
             SetProperty(Function() IsTemplate, _IsTemplate, Value)
         End Set
+    End Property
+
+    Private _IsSelectable As Boolean = True
+    Public ReadOnly Property IsSelectable As Boolean
+        Get
+            Return _IsSelectable
+        End Get
     End Property
 
     Private _SupportsTags As Boolean = True
