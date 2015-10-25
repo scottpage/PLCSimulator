@@ -6,6 +6,7 @@
         _Id = Guid.NewGuid
         _Tag = tag
         _ActionType = actionType
+        _IsSelectable = True
     End Sub
 
     Protected Sub New(tag As TagViewModel, actionType As ElementActionType, isSelectable As Boolean)
@@ -19,6 +20,7 @@
         _Id = id
         _Tag = tag
         _ActionType = actionType
+        _IsSelectable = True
     End Sub
 
     Protected Sub New(tag As TagViewModel, id As Guid, actionType As ElementActionType, isSelectable As Boolean)
@@ -211,7 +213,7 @@
     End Sub
 
     Public Function CanStartDrag(dragInfo As IDragInfo) As Boolean Implements IDragSource.CanStartDrag
-        Return IsSelectable
+        Return dragInfo.MouseButton = MouseButton.Left And IsSelectable
     End Function
 
     Public Sub DragCancelled() Implements IDragSource.DragCancelled
@@ -223,6 +225,12 @@
     End Sub
 
     Public Sub StartDrag(dragInfo As IDragInfo) Implements IDragSource.StartDrag
+        If IsTemplate Then
+            dragInfo.Effects = DragDropEffects.Copy
+        Else
+            dragInfo.Effects = DragDropEffects.Move
+        End If
+        dragInfo.Data = Me
         GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.StartDrag(dragInfo)
     End Sub
 

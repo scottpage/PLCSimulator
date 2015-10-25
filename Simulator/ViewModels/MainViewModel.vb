@@ -9,11 +9,10 @@
     End Property
 
     Public Sub New()
-        'TODO:  Make private on release
+        'TODO:  Make private and empty on release
 
         Dim Ladder As New LadderViewModel
 
-        AvailableElements.Add(New WireViewModel With {.IsTemplate = True})
         AvailableElements.Add(New ContactViewModel With {.IsNormallyClosed = False, .IsTemplate = True})
         AvailableElements.Add(New ContactViewModel With {.IsNormallyClosed = True, .IsTemplate = True})
         AvailableElements.Add(New CoilViewModel With {.IsTemplate = True})

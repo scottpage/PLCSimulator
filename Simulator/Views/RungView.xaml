@@ -54,6 +54,17 @@
                  dd:DragDrop.DropHandler="{Binding}"
                  dd:DragDrop.DragDropCopyKeyState="LeftMouseButton"
                  SelectionMode="Single">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSelectable}"
+                                     Value="False">
+                            <Setter Property="IsEnabled"
+                                    Value="False" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ListBox.ItemContainerStyle>
             <ListBox.InputBindings>
                 <KeyBinding Key="Delete"
                             Command="{Binding DeleteSelectedElementCommand}" />

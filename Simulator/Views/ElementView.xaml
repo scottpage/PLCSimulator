@@ -8,9 +8,11 @@
              mc:Ignorable="d"
              d:DesignHeight="300"
              d:DesignWidth="300"
-             dd:DragDrop.IsDragSource="{Binding IsSelectable}"
              dd:DragDrop.IsDropTarget="True"
+             dd:DragDrop.DragHandler="{Binding}"
              dd:DragDrop.DropHandler="{Binding}"
+             dd:DragDrop.UseDefaultEffectDataTemplate="True"
+             dd:DragDrop.UseDefaultDragAdorner="True"
              dd:DragDrop.DragDropCopyKeyState="LeftMouseButton"
              Margin="-1,0,-1,0"
              Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}">
