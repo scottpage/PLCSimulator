@@ -1,6 +1,6 @@
 ﻿Public MustInherit Class ElementViewModel
     Inherits ScanableViewModel
-    Implements ICloneable, IDropTarget
+    Implements ICloneable, IDragSource, IDropTarget
 
     Protected Sub New(tag As TagViewModel, actionType As ElementActionType)
         _Id = Guid.NewGuid
@@ -157,7 +157,7 @@
     End Function
 
     Private Sub Remove(obj As Object)
-        Rung.Elements.Remove(Me)
+        Rung.DeleteSelectedElementCommand.Execute(Nothing)
     End Sub
 
 #End Region
@@ -208,6 +208,22 @@
             If IsReceiverOfCurrentDraggedItem Then Tag = DirectCast(dropInfo.Data, TagViewModel)
         End If
         SetProperty(Function() IsReceiverOfCurrentDraggedItem, _IsReceiverOfCurrentDraggedItem, False)
+    End Sub
+
+    Public Function CanStartDrag(dragInfo As IDragInfo) As Boolean Implements IDragSource.CanStartDrag
+        Return IsSelectable
+    End Function
+
+    Public Sub DragCancelled() Implements IDragSource.DragCancelled
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.DragCancelled()
+    End Sub
+
+    Public Sub Dropped(dropInfo As IDropInfo) Implements IDragSource.Dropped
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.Dropped(dropInfo)
+    End Sub
+
+    Public Sub StartDrag(dragInfo As IDragInfo) Implements IDragSource.StartDrag
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.StartDrag(dragInfo)
     End Sub
 
 End Class

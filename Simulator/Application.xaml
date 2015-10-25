@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:ScottPage.Simulators.Simulator"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              ShutdownMode="OnExplicitShutdown">
     <Application.Resources>
         <Style TargetType="{x:Type Rectangle}" />

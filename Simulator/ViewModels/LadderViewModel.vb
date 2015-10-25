@@ -30,6 +30,28 @@
         Return True
     End Function
 
+    Private _MinRungLength As Integer = 8
+    Public Property MinRungLength As Integer
+        Get
+            Return _MinRungLength
+        End Get
+        Set(ByVal Value As Integer)
+            SetProperty(Function() MinRungLength, _MinRungLength, Value)
+        End Set
+    End Property
+
+    Private _MaxRungLength As Integer = 8
+    Public Property MaxRungLength As Integer
+        Get
+            Return _MaxRungLength
+        End Get
+        Set(ByVal Value As Integer)
+            Dim LongestRungWithoutWiresLength = GetLongestRungWithoutWiresLength()
+            If Math.Max(Value, LongestRungWithoutWiresLength) <= MinRungLength Then Return
+            SetProperty(Function() MaxRungLength, _MaxRungLength, Value)
+        End Set
+    End Property
+
     Public Function GetLongestRungWithoutWiresLength() As Integer
         Dim NumElements As Integer = 0
         Dim RungsWithoutWires = (From r In Rungs Where
@@ -41,11 +63,23 @@
         Return NumElements
     End Function
 
-    Public Sub PadRungs()
+    Public Sub ResizeRungs()
         Dim LongestRungLength = GetLongestRungWithoutWiresLength()
         For Each R In Rungs
             R.Resize(LongestRungLength)
         Next
+    End Sub
+
+    Public Sub AppendRung()
+        Dim R As New RungViewModel With {.Ladder = Me, .Number = Rungs.Count + 1}
+        For I = 1 To MinRungLength
+            Dim El As New WireViewModel
+            El.Rung = R
+            R.Elements.Add(El)
+        Next
+        Rungs.Add(R)
+        R.Resize(MinRungLength)
+        SelectedRung = R
     End Sub
 
 #Region "DeleteSelectedRungCommand"
@@ -98,8 +132,7 @@
     End Function
 
     Private Sub AppendRung(obj As Object)
-        Rungs.Add(New RungViewModel With {.Ladder = Me, .Number = Rungs.Count + 1})
-        SelectedRung = Rungs.LastOrDefault
+        AppendRung()
     End Sub
 
 #End Region

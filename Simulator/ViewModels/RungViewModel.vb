@@ -94,7 +94,7 @@
         While Elements.Count < newSize
             Dim VM As New WireViewModel
             VM.Rung = Me
-            Elements.Insert(LEIndex - 1, VM)
+            Elements.Insert(LEIndex, VM)
         End While
         For Each E In Elements
             E.Invalidate()
@@ -183,7 +183,7 @@
         End If
 
         'Tell our ladder to update the other rungs to match our element count (this may go away later and be replaced by a specified maximum rung element count)
-        Ladder.PadRungs()
+        Ladder.ResizeRungs()
 
         'Set the selected element of our elements collecftion as the newly added element for user friendliness
         SelectedElement = Element
@@ -214,6 +214,7 @@
         Else
             SelectedElement = Elements(LastIndex)
         End If
+        Ladder.ResizeRungs()
     End Sub
 
 #End Region
