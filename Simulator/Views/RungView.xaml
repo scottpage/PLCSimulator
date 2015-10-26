@@ -8,6 +8,7 @@
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d"
              MinWidth="100"
+             Margin="0,0,-1,0"
              d:DesignHeight="300"
              d:DesignWidth="300">
     <UserControl.Style>

@@ -14,7 +14,7 @@
              dd:DragDrop.UseDefaultEffectDataTemplate="True"
              dd:DragDrop.UseDefaultDragAdorner="True"
              dd:DragDrop.DragDropCopyKeyState="LeftMouseButton"
-             Margin="-1,0,-1,0"
+             Margin="-1,0,-1,-1"
              Width="{Binding ActualHeight, Mode=OneWay, RelativeSource={RelativeSource Self}}">
     <UserControl.Style>
         <Style TargetType="{x:Type UserControl}">
