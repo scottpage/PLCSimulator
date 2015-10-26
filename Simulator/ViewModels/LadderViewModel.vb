@@ -54,11 +54,8 @@
 
     Public Function GetLongestRungWithoutWiresLength() As Integer
         Dim NumElements As Integer = 0
-        Dim RungsWithoutWires = (From r In Rungs Where
-                                 (From e In r.Elements Where
-                                 Not TypeOf e Is WireViewModel).Count < 1)
-        For Each R In RungsWithoutWires
-            If R.Elements.Count > NumElements Then NumElements = R.Elements.Count
+        For Each R In Rungs
+            NumElements = Math.Max(NumElements, R.NonWireElementCount)
         Next
         Return NumElements
     End Function
@@ -75,10 +72,11 @@
         For I = 1 To MinRungLength
             Dim El As New WireViewModel
             El.Rung = R
-            R.Elements.Add(El)
+            R.AddElement(El)
         Next
         Rungs.Add(R)
-        R.Resize(MinRungLength)
+        Dim LongestRung = GetLongestRungWithoutWiresLength()
+        R.Resize(LongestRung)
         SelectedRung = R
     End Sub
 

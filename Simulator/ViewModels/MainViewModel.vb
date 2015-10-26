@@ -32,9 +32,9 @@
                 D.DiscreteTag.Value = I > 3
                 D.Rung = R
                 D.Invalidate()
-                R.Elements.Add(D)
+                R.AddElement(D)
             Next
-            R.Elements.Add(New CoilViewModel With {.Rung = R, .IsTemplate = False, .Tag = R.Elements.First.Tag})
+            R.AddElement(New CoilViewModel With {.Rung = R, .IsTemplate = False, .Tag = R.Elements.First.Tag})
             Ladder.Add(R)
         Next
         Ladders.Add(Ladder)

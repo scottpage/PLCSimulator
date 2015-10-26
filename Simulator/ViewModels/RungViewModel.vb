@@ -57,6 +57,28 @@
         End Set
     End Property
 
+    Public ReadOnly Property TotalElementCount As Integer
+        Get
+            Return Elements.Count
+        End Get
+    End Property
+
+    Public ReadOnly Property WireElementCount As Integer
+        Get
+            Return TotalElementCount - NonWireElementCount
+        End Get
+    End Property
+
+    Public ReadOnly Property NonWireElementCount As Integer
+        Get
+            Dim RetVal As Integer = 0
+            For Each E In Elements
+                If Not TypeOf E Is WireViewModel Then RetVal += 1
+            Next
+            Return RetVal
+        End Get
+    End Property
+
     Protected Overrides Function OnEvaluate(previousScanable As ScanableViewModel, nextScanable As ScanableViewModel) As Boolean
         Return Elements.Last IsNot Nothing AndAlso Elements.Last.IsSet
     End Function
@@ -87,24 +109,64 @@
         End Get
     End Property
 
+    Public Sub AddElement(element As ElementViewModel)
+        Elements.Add(element)
+        ResizeLadderRungs()
+    End Sub
+
+    Public Sub InsertElement(element As ElementViewModel, index As Integer)
+        Elements.Insert(index, element)
+        ResizeLadderRungs()
+    End Sub
+
+    Private Sub ResizeLadderRungs()
+        If Ladder IsNot Nothing Then Ladder.ResizeRungs()
+    End Sub
+
+    Public Sub RemoveElement(element As ElementViewModel)
+        Dim LastIndex = Elements.IndexOf(element)
+        Elements.Remove(element)
+        If element Is SelectedElement Then
+            If LastIndex >= Elements.Count - 1 Then
+                SelectedElement = Elements.LastOrDefault
+            Else
+                SelectedElement = Elements(LastIndex)
+            End If
+        End If
+        ResizeLadderRungs()
+    End Sub
+
+    Public Sub RemoveSelectedElement()
+        RemoveElement(SelectedElement)
+    End Sub
+
     Public Sub Resize(newSize As Integer)
-        If Elements.Count.Equals(newSize) Then Return
-        Dim LE = Elements.Last
-        Dim LEIndex = Elements.IndexOf(LE)
-        While Elements.Count < newSize
-            Dim VM As New WireViewModel
-            VM.Rung = Me
-            Elements.Insert(LEIndex, VM)
-        End While
+        If Elements.Count = newSize Or newSize < NonWireElementCount Then Return
+
+        If newSize > Elements.Count Then
+            Dim LE = Elements.Last
+            Dim LEIndex = Elements.IndexOf(LE)
+            While Elements.Count < newSize
+                Dim VM As New WireViewModel
+                VM.Rung = Me
+                Elements.Insert(LEIndex, VM)
+            End While
+        ElseIf newSize < Elements.Count Then
+            Dim NumWiresToRemove = Elements.Count - newSize
+            For I = 0 To NumWiresToRemove - 1
+                Dim Wires = (From e In Elements Where TypeOf e Is WireViewModel)
+                Elements.Remove(Wires.Last)
+            Next
+        End If
         For Each E In Elements
             E.Invalidate()
         Next
     End Sub
 
-    Public Sub RemoveLines()
+    Public Sub RemoveWires()
         Dim Lines = (From el In Elements Where TypeOf el Is WireViewModel)
         For Each L In Lines
-            Elements.Remove(L)
+            RemoveElement(L)
         Next
     End Sub
 
@@ -176,10 +238,10 @@
         'If this is our first element, the insert postion is after our last element, or if it's an end-only element (currently only CoilViewModel)
         If Elements.Count = 0 Or dropInfo.InsertIndex >= Elements.Count Or TypeOf Element Is CoilViewModel Then
             'then we add the element to the end of our existing elements collection
-            Elements.Add(Element)
+            AddElement(Element)
         Else
             'Otherwise we insert it at the dropInfo.InsertIndex position
-            Elements.Insert(dropInfo.InsertIndex, Element)
+            InsertElement(Element, dropInfo.InsertIndex)
         End If
 
         'Tell our ladder to update the other rungs to match our element count (this may go away later and be replaced by a specified maximum rung element count)
@@ -207,14 +269,7 @@
     End Function
 
     Private Sub DeleteSelectedElement(obj As Object)
-        Dim LastIndex = Elements.IndexOf(SelectedElement)
-        Elements.Remove(SelectedElement)
-        If LastIndex >= Elements.Count - 1 Then
-            SelectedElement = Elements.LastOrDefault
-        Else
-            SelectedElement = Elements(LastIndex)
-        End If
-        Ladder.ResizeRungs()
+        RemoveSelectedElement()
     End Sub
 
 #End Region
