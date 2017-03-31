@@ -184,6 +184,34 @@
         Return IsItemNothing Or IsItemSameTypeAsTag
     End Function
 
+#Region "IDragSource"
+
+    Public Function TryCatchOccurredException(exception As Exception) As Boolean Implements IDragSource.TryCatchOccurredException
+        Throw New NotImplementedException()
+    End Function
+
+    Public Sub DragCancelled() Implements IDragSource.DragCancelled
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.DragCancelled()
+    End Sub
+
+    Public Sub Dropped(dropInfo As IDropInfo) Implements IDragSource.Dropped
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.Dropped(dropInfo)
+    End Sub
+
+    Public Sub StartDrag(dragInfo As IDragInfo) Implements IDragSource.StartDrag
+        If IsTemplate Then
+            dragInfo.Effects = DragDropEffects.Copy
+        Else
+            dragInfo.Effects = DragDropEffects.Move
+        End If
+        dragInfo.Data = Me
+        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.StartDrag(dragInfo)
+    End Sub
+
+#End Region
+
+#Region "IDropTarget"
+
     Public Overridable Sub DragOver(dropInfo As IDropInfo) Implements IDropTarget.DragOver
         'Initial assumption is that we cannot accept the dragged item
         dropInfo.Effects = DragDropEffects.None
@@ -216,22 +244,6 @@
         Return dragInfo.MouseButton = MouseButton.Left And IsSelectable
     End Function
 
-    Public Sub DragCancelled() Implements IDragSource.DragCancelled
-        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.DragCancelled()
-    End Sub
-
-    Public Sub Dropped(dropInfo As IDropInfo) Implements IDragSource.Dropped
-        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.Dropped(dropInfo)
-    End Sub
-
-    Public Sub StartDrag(dragInfo As IDragInfo) Implements IDragSource.StartDrag
-        If IsTemplate Then
-            dragInfo.Effects = DragDropEffects.Copy
-        Else
-            dragInfo.Effects = DragDropEffects.Move
-        End If
-        dragInfo.Data = Me
-        GongSolutions.Wpf.DragDrop.DragDrop.DefaultDragHandler.StartDrag(dragInfo)
-    End Sub
+#End Region
 
 End Class

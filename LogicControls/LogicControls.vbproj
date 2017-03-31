@@ -8,9 +8,10 @@
     <RootNamespace>ScottPage.Programming.LogicControls</RootNamespace>
     <AssemblyName>ScottPage.Programming.LogicControls</AssemblyName>
     <OutputType>Library</OutputType>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <MyType>Custom</MyType>
     <ProjectGuid>{C9DDE4A0-3844-4EFC-AA21-82BC12D0685E}</ProjectGuid>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -133,7 +134,7 @@
     <Service Include="{94E38DFF-614B-4CBD-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\WPF.Common\WPF.Common.vbproj">
+    <ProjectReference Include="..\..\..\..\GitHub\WPFCommon\WPF.Common.vbproj">
       <Project>{aec54a98-71fb-4bec-8aae-073be87f0769}</Project>
       <Name>WPF.Common</Name>
     </ProjectReference>
